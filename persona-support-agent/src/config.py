@@ -20,7 +20,7 @@ GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_
 # Model configuration
 DEFAULT_LLM_MODEL = "gemini-2.5-flash"  # standard fast model
 DEFAULT_CLASSIFIER_MODEL = "gemini-2.5-flash"  # stable classification model
-DEFAULT_EMBEDDING_MODEL = "text-embedding-004"
+DEFAULT_EMBEDDING_MODEL = "gemini-embedding-001"
 LOCAL_EMBEDDING_MODEL = "all-MiniLM-L6-v2"
 
 # RAG & Chunking
@@ -29,7 +29,7 @@ CHUNK_OVERLAP = 40
 TOP_K = 3
 
 # Escalation settings
-SIMILARITY_THRESHOLD = 0.40  # Minimum similarity score to consider retrieval grounded
+SIMILARITY_THRESHOLD = 0.55  # Minimum similarity score to consider retrieval grounded
 MAX_CONVERSATION_TURNS = 3   # Max turns user can be frustrated/negative before escalation
 
 # Sensitive topics that trigger immediate human escalation
