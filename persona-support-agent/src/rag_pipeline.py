@@ -18,12 +18,6 @@ class LocalRAGPipeline:
         self.db_dir = db_dir or str(config.DB_DIR)
         self.chroma_client = chromadb.PersistentClient(path=self.db_dir)
         
-        # Configure collection with cosine distance
-        self.collection = self.chroma_client.get_or_create_collection(
-            name="support_kb",
-            metadata={"hnsw:space": "cosine"}
-        )
-        
         # Setup API Client for Gemini
         self.api_key = config.GEMINI_API_KEY
         self.gemini_client = None
@@ -33,7 +27,7 @@ class LocalRAGPipeline:
         if self.api_key:
             try:
                 self.gemini_client = genai.Client(api_key=self.api_key)
-                print("Using Gemini API text-embedding-004 for embeddings.")
+                print(f"Using Gemini API {config.DEFAULT_EMBEDDING_MODEL} for embeddings.")
             except Exception as e:
                 print(f"Error initializing Gemini client: {e}. Falling back to local SentenceTransformers.")
                 self.use_local = True
@@ -50,6 +44,49 @@ class LocalRAGPipeline:
             except Exception as e:
                 print(f"Error loading local SentenceTransformer model: {e}")
                 raise e
+
+        # Determine target dimension of our embedding model
+        try:
+            target_dim = len(self.get_embedding("test_dimension"))
+        except Exception as e:
+            print(f"Error generating test embedding: {e}")
+            target_dim = 384  # default/fallback
+
+        # Check if collection exists and has matching dimension
+        collection_exists = False
+        try:
+            self.chroma_client.get_collection(name="support_kb")
+            collection_exists = True
+        except Exception:
+            pass
+
+        if collection_exists:
+            try:
+                temp_col = self.chroma_client.get_collection(name="support_kb")
+                if temp_col.count() > 0:
+                    sample = temp_col.peek(limit=1)
+                    if sample and sample.get('embeddings') is not None and len(sample['embeddings']) > 0:
+                        stored_dim = len(sample['embeddings'][0])
+                        if stored_dim != target_dim:
+                            print(f"Dimension mismatch: DB stores {stored_dim} dims, but model generates {target_dim} dims. Re-initializing collection...")
+                            self.chroma_client.delete_collection(name="support_kb")
+            except Exception as e:
+                print(f"Error checking DB dimensions: {e}. Attempting collection recreation...")
+                try:
+                    self.chroma_client.delete_collection(name="support_kb")
+                except Exception:
+                    pass
+
+        # Now safely create or get the collection
+        self.collection = self.chroma_client.get_or_create_collection(
+            name="support_kb",
+            metadata={"hnsw:space": "cosine"}
+        )
+
+        # Ingest documents if database is empty
+        if self.collection.count() == 0:
+            print("Database is empty. Running ingestion...")
+            self.ingest_directory()
 
     def get_embedding(self, text: str) -> List[float]:
         """Generates embedding vector for a given text."""
