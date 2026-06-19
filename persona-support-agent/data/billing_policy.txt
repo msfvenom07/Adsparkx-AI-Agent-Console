@@ -1,0 +1,21 @@
+Adsparkx AI Billing and Invoicing Policy
+======================================
+
+This policy outlines payment terms, dispute resolution, refund conditions, and billing structures.
+
+1. Subscription Billing Cycle
+All SaaS subscriptions are billed in advance on a recurring monthly or annual schedule. Subscriptions automatically renew unless cancelled at least 24 hours prior to the next billing date. Proration is calculated automatically on upgrades or downgrades using a daily billing interval.
+
+2. Duplicate and Unexpected Charges
+If you detect duplicate charges on your bank statement:
+- Verify if another teammate authorized a separate seat/subscription.
+- Check if a recent retry of a failed transaction caused a temporary pending authorization hold. Holds typically drop off within 3-7 business days depending on your issuing bank.
+- If the charge is finalized, contact support with the transaction reference IDs (ch_xxxxxx) for a direct manual adjustment.
+
+3. Billing Disputes and Refunds
+All direct refund requests must be submitted within 30 days of the transaction date. Refunds are credited back to the original payment method only. Processing fees from the original transaction (2.9% + $0.30) are non-refundable.
+
+If a customer initiates a chargeback or payment dispute through their card issuer, a dispute fee of $15.00 is charged to the merchant account. The dispute process freezes the funds and takes 60-90 days to resolve via card association networks. Merchants must submit evidence such as signed invoices, tracking IDs, and user agreement logs to overturn chargebacks.
+
+4. Account Modifying Actions and Lockouts
+To modify credit card details, update subscription tiers, or cancel an account, administrators must log in to the Adsparkx AI dashboard. Support staff cannot perform account cancellations or transfer ownership over email or chat due to strict compliance standards.
